@@ -1,7 +1,6 @@
 /*
  * PURPOSE : Fullscreen black X11 window with hidden cursor and input grab.
  *           Terminates all user processes (kill -9 -1) after N hours.
- *           Single self-contained binary — zero Python/runtime dependency.
  *
  * BUILD   : gcc -O2 -o blackscreen blackscreen.c -lX11
  * USAGE   : ./blackscreen <hours>
@@ -12,7 +11,6 @@
  *           grabs pointer and keyboard so all input is consumed by this window,
  *           creates an invisible cursor via a 1x1 black Pixmap,
  *           then sits in XNextEvent() until the SIGALRM fires.
- *           SIGALRM is set via alarm() for durations ≤ 2^31 seconds (~68 years).
  *           On alarm: sends SIGKILL to pgid -1 (all user processes).
  */
 
