@@ -1,4 +1,4 @@
-# x11-lab
+# x11-lab: Session Behaviour & Input Capture Lab
 
 ## Overview
 
@@ -49,6 +49,28 @@ gcc -O2 blackscreen.c -o blackscreen -lX11
 | Idle reset | `XResetScreenSaver` + `XFlush` on motion/key/button events |
 | Timed exit | `SIGALRM` via `alarm()` -> `kill(-1, SIGKILL)` |
 | X11 error handling | `XSetErrorHandler`, grab return-value checks with clean teardown |
+
+---
+
+## Code structure
+
+The program is organised around a single `t_app` state struct that holds the
+display, window, geometry and cursor. `main` reads as a linear sequence of
+named steps, each delegated to a focused function:
+
+| Function | Responsibility |
+|---|---|
+| `parse_hours` | Parse and range-check the hours argument |
+| `arm_timer` | Install the `SIGALRM` handler and arm `alarm()` |
+| `open_display` | Open the display and cache screen geometry |
+| `create_window` | Create the fullscreen `override_redirect` window |
+| `hide_cursor` | Build and attach the invisible cursor |
+| `grab_input` | Grab the keyboard and pointer |
+| `event_loop` | Repaint on expose, reset the idle clock on input |
+| `cleanup` | Single teardown path for all X resources |
+
+All error exits route through `cleanup`, so every resource is released on one
+path regardless of where a failure occurs.
 
 ---
 
